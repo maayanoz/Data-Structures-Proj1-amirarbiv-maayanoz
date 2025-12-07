@@ -190,8 +190,17 @@ class AVLTree(object):
 	@rtype: list
 	@returns: a sorted list according to key of touples (key, value) representing the data structure
 	"""
-	def avl_to_array(self):
-		return None
+	def avl_to_array(self): #recursive inorder traversal
+		if self.root is None: #check if tree is empty
+			return []
+		res = []
+		def inorder(curr): #inorder traversal
+			if curr.is_real_node():
+				inorder(curr.left)
+				res.append((curr.key, curr.value))
+				inorder(curr.right)
+		inorder(self.root)
+		return res
 
 
 	"""returns the node with the maximal key in the dictionary
