@@ -66,7 +66,27 @@ class AVLTree(object):
 	and e is the number of edges on the path between the starting node and ending node+1.
 	"""
 	def search(self, key):
-		return None, -1
+		if self.root is None:
+			return None, -1
+		#if key > self.max_node.key or key < self.min_node.key: #check if key is out of bounds
+		#	return None, -1
+		count = 0
+		curr = self.root
+		while curr.key != key: #regular BST search
+			if key > curr.key:
+				if curr.right.is_real_node():
+					curr = curr.right
+					count += 1
+				else:
+					return None, -1
+			else: #key < curr.key
+				if curr.left.is_real_node():
+					curr = curr.left
+					count += 1
+				else:
+					return None, -1
+			
+		return curr, count+1
 
 
 	"""searches for a node in the dictionary corresponding to the key, starting at the max
