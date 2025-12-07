@@ -51,6 +51,10 @@ class AVLTree(object):
 	"""
 	def __init__(self):
 		self.root = None
+		self.size = 0 #added fields
+#		self.lst = [] #list of max nodes for finger search
+#		self.max_node = self.lst[0] if self.lst else None
+#		self.min_node = self.lst[-1] if self.lst else None
 
 
 	"""searches for a node in the dictionary corresponding to the key (starting at the root)
