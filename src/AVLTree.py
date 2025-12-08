@@ -258,6 +258,46 @@ class AVLTree(object):
 
 
 
+	"""performs a rotation on the given unbalanced node
+	@type node: AVLNode
+	@param node: the unbalanced node
+"""
+	def rotate_left(self, node): #node is the unbalanced node
+		temp = node
+		node = node.right
+		node.parent = temp.parent
+		temp.right = node.left
+		if temp.right.is_real_node():
+			temp.right.parent = temp
+		node.left = temp
+		if temp.parent is not None: #check if temp is not root
+			if temp.parent.right == temp:
+				temp.parent.right = node
+			else:
+				temp.parent.left = node
+		else:
+			self.root = node
+		temp.parent = node
+		return None
+
+	def rotate_right(self, node): #code is similar to rotate_left
+		temp = node
+		node = node.left
+		node.parent = temp.parent
+		temp.left = node.right
+		if temp.left.is_real_node():
+			temp.left.parent = temp
+		node.right = temp
+		if temp.parent is not None:
+			if temp.parent.right == temp:
+				temp.parent.right = node
+			else:
+				temp.parent.left = node
+		else:
+			self.root = node
+		temp.parent = node
+		return None
+
 
 	"""deletes node from the dictionary
 
