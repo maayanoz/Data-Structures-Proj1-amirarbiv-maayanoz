@@ -86,6 +86,8 @@ class AVLTree(object):
 		return curr, count+1
 
 
+
+
 	"""searches for a node in the dictionary corresponding to the key, starting at the max
         
 	@type key: int
@@ -125,7 +127,57 @@ class AVLTree(object):
 	and h is the number of PROMOTE cases during the AVL rebalancing
 	"""
 	def insert(self, key, val):
-		return None, -1, -1
+		return self.insert_from_node(self, key, val, self.root)
+
+
+
+
+	"""inserts a new node into the dictionary with corresponding key and value, starting at a given node
+	@type key: int
+	@pre: key currently does not appear in the dictionary
+	@param key: key of item that is to be inserted to self
+	@type val: string
+	@param val: the value of the item
+	@type start_node: AVLNode
+	@param start_node: the node from which the insertion starts
+	@rtype: (AVLNode,int,int)
+	@returns: a 3-tuple (x,e,h) where x is the new node,
+	e is the number of edges on the path between the starting node and new node before rebalancing,
+	and h is the number of PROMOTE cases during the AVL rebalancing
+"""
+
+	def insert_from_node(self, key, val, start_node):
+		edges = 0
+		new_node = AVLNode(key, val)
+		curr = start_node
+		if self.root is None: #check if tree is empty
+			self.root = new_node
+			self.size += 1
+			return new_node, edges, rotations
+
+		while True: #regular BST insert
+			if key < curr.key:
+				if curr.left.is_real_node():
+					curr = curr.left
+					edges += 1
+				else:
+					curr.left = new_node
+					new_node.parent = curr
+					edges += 1
+					break
+			else: #key > curr.key
+				if curr.right.is_real_node():
+					curr = curr.right
+					edges += 1
+				else:
+					curr.right = new_node
+					new_node.parent = curr
+					edges += 1
+					break
+		self.size += 1
+		rotations = self.rebalance_after_insert(key, new_node)
+		
+		return new_node, edges, rotations
 
 
 	"""inserts a new node into the dictionary with corresponding key and value, starting at the max
