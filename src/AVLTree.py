@@ -19,17 +19,14 @@ class AVLNode(object):
 	def __init__(self, key, value, is_virtual=False):
 		self.key = key
 		self.value = value
-		self.left = None
-		self.right = None
+		self.left = AVLNode(-1, "", True) #virtual nodes
+		self.right = AVLNode(-1, "", True) #like they asked in the instructions
 		self.parent = None
-
+		self.height = -1
 		"""Indicates whether the node is a virtual node
 		@type: bool
 		"""
 		self.is_virtual = is_virtual
-
-		self.height = -1
-		
 
 	"""returns whether self is not a virtual node 
 
