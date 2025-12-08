@@ -22,7 +22,7 @@ class AVLNode(object):
 		self.left = AVLNode(-1, "", True) #virtual nodes
 		self.right = AVLNode(-1, "", True) #like they asked in the instructions
 		self.parent = None
-		self.height = -1
+		self.height = 0 if not is_virtual else -1
 		"""Indicates whether the node is a virtual node
 		@type: bool
 		"""
@@ -48,10 +48,7 @@ class AVLTree(object):
 	"""
 	def __init__(self):
 		self.root = None
-		self.size = 0 #added fields
-#		self.lst = [] #list of max nodes for finger search
-#		self.max_node = self.lst[0] if self.lst else None
-#		self.min_node = self.lst[-1] if self.lst else None
+		self._size = 0 #added field
 
 
 	"""searches for a node in the dictionary corresponding to the key (starting at the root)
@@ -105,6 +102,8 @@ class AVLTree(object):
 		count = 0
 		curr = self.max_node
 		while curr.key > key: #move up until we find the correct subtree
+			if curr.parent is None:
+				break
 			curr = curr.parent
 			count += 1
 		(found, edges) = self.search(key) #search from the found subtree
@@ -127,7 +126,7 @@ class AVLTree(object):
 	and h is the number of PROMOTE cases during the AVL rebalancing
 	"""
 	def insert(self, key, val):
-		return self.insert_from_node(self, key, val, self.root)
+		return self.insert_from_node(key, val, self.root)
 
 
 
@@ -152,8 +151,8 @@ class AVLTree(object):
 		curr = start_node
 		if self.root is None: #check if tree is empty
 			self.root = new_node
-			self.size += 1
-			return new_node, edges, rotations
+			self._size += 1
+			return new_node, 0, 0
 
 		while True: #regular BST insert
 			if key < curr.key:
@@ -249,9 +248,11 @@ class AVLTree(object):
 		edges = 0
 		curr = self.max_node
 		while curr.key > key: #move up until we find the correct subtree
+			if curr.parent is None:
+				break
 			curr = curr.parent
 			edges += 1
-		(new_node, search_edges, rotations) = self.insert_from_node(self, key, val, curr) #insert from the found subtree
+		(new_node, search_edges, rotations) = self.insert_from_node(key, val, curr) #insert from the found subtree
 		edges += search_edges
 		return new_node, edges, rotations
 
@@ -387,7 +388,7 @@ class AVLTree(object):
 	@returns: the number of items in dictionary 
 	"""
 	def size(self): #simple
-		return self.size	
+		return self._size	
 
 
 	"""returns the root of the tree representing the dictionary
@@ -396,6 +397,4 @@ class AVLTree(object):
 	@returns: the root, None if the dictionary is empty
 	"""
 	def get_root(self): #simple
-		if self.root is not None:
-			return self.root
-		return None
+		return self.root #None if empty
