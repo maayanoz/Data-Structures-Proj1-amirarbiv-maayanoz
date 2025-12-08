@@ -178,6 +178,53 @@ class AVLTree(object):
 		rotations = self.rebalance_after_insert(key, new_node)
 		
 		return new_node, edges, rotations
+    
+
+
+
+
+    
+""" rotates and rebalances the tree after insertion
+
+	@type key: int
+	@param key: key of the newly inserted node
+	@type node: AVLNode
+	@param node: the newly inserted node
+	@rtype: int
+	@returns: number of rotations performed during rebalancing
+"""
+
+	def rebalance_after_insert(self, key, node): #rebalancing and updating heights going up from the inserted node
+		curr = node.parent
+		rotations = 0
+		while curr is not None:
+			left_height = curr.left.height if curr.left.is_real_node() else -1
+			right_height = curr.right.height if curr.right.is_real_node() else -1
+			curr.height = 1 + max(left_height, right_height)
+
+			balance_factor = left_height - right_height
+
+			if balance_factor > 1: #left heavy
+				if key < curr.left.key: #left-left case
+					self.rotate_right(curr)
+					rotations += 1
+				else: #left-right case
+					self.rotate_left(curr.left)
+					self.rotate_right(curr)
+					rotations += 2
+			elif balance_factor < -1: #right heavy
+				if key > curr.right.key: #right-right case
+					self.rotate_left(curr)
+					rotations += 1
+				else: #right-left case
+					self.rotate_right(curr.right)
+					self.rotate_left(curr)
+					rotations += 2
+
+			curr = curr.parent
+		return rotations
+
+
 
 
 	"""inserts a new node into the dictionary with corresponding key and value, starting at the max
