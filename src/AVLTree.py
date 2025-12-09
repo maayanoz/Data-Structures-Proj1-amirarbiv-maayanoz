@@ -173,7 +173,8 @@ class AVLTree(object):
 					new_node.parent = curr
 					edges += 1
 					break
-		self.size += 1
+		self._size += 1
+		self.update_heights(new_node) #fix heights after insertion
 		rotations = self.rebalance_after_insert(key, new_node)
 		
 		return new_node, edges, rotations
@@ -219,7 +220,7 @@ class AVLTree(object):
 				else: #left-right case
 					self.rotate_left(curr.left)
 					self.rotate_right(curr)
-					rotations += 2
+					#rotations += 2 what they said not to count
 			elif balance_factor < -1: #right heavy
 				if key > curr.right.key: #right-right case
 					self.rotate_left(curr)
@@ -227,7 +228,7 @@ class AVLTree(object):
 				else: #right-left case
 					self.rotate_right(curr.right)
 					self.rotate_left(curr)
-					rotations += 2
+					#rotations += 2 what they said not to count
 
 			curr = curr.parent
 		return rotations
@@ -263,6 +264,7 @@ class AVLTree(object):
 			edges += 1
 		(new_node, search_edges, rotations) = self.insert_from_node(key, val, curr) #insert from the found subtree
 		edges += search_edges
+		update_heights(new_node)
 		return new_node, edges, rotations
 
 
@@ -272,7 +274,7 @@ class AVLTree(object):
 	@type node: AVLNode
 	@param node: the unbalanced node
 """
-	def rotate_left(self, node): #node is the unbalanced node
+	def rotate_left(self, node): #node is the unbalanced node 
 		temp = node
 		node = node.right
 		node.parent = temp.parent
@@ -288,8 +290,12 @@ class AVLTree(object):
 		else:
 			self.root = node
 		temp.parent = node
+		#switch heights
+		temp_height = temp.height
+		temp.height = node.height
+		node.height = temp_height
 		return None
-
+#need to fix heights after rotation
 	def rotate_right(self, node): #code is similar to rotate_left
 		temp = node
 		node = node.left
@@ -306,6 +312,10 @@ class AVLTree(object):
 		else:
 			self.root = node
 		temp.parent = node
+		#switch heights
+		temp_height = temp.height
+		temp.height = node.height
+		node.height = temp_height
 		return None
 
 
