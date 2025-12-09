@@ -340,6 +340,7 @@ class AVLTree(object):
 	or the opposite way
 	"""
 	def join(self, tree2, key, val):
+		#handle edge cases
 		if tree2._size + self._size == 0: #both trees are empty
 			new_node = AVLNode(key, val)
 			self.root = new_node
@@ -353,14 +354,21 @@ class AVLTree(object):
 		if tree2._size == 0: #tree2 is empty
 			self.insert(key, val)
 			return
+
+		new_node = AVLNode(key, val)
 		if self.root.key < key: #self's keys are smaller
-			new_node = AVLNode(key, val)
 			new_node.left = self.root
+			update_heights(new_node)
+			self.root.parent = new_node
+
 			curr = tree2.root
-			while curr.left.key 
+			while curr.left.height >= new_node.height: #find the correct spot to insert new_node
+				curr = curr.left
+			new_node.right = curr
+			update_heights(new_node)
+			
 			return
 		if tree2.root.key < key: #tree2's keys are smaller
-			new_node = AVLNode(key, val)
 			new_node.right = self.root
 			self.root.parent = new_node
 			new_node.left = tree2.root
