@@ -330,7 +330,37 @@ class AVLTree(object):
 	or the opposite way
 	"""
 	def join(self, tree2, key, val):
-		return
+		if tree2._size + self._size == 0: #both trees are empty
+			new_node = AVLNode(key, val)
+			self.root = new_node
+			self._size = 1
+			return
+		if self._size == 0: #self is empty
+			tree2.insert(key, val)
+			self.root = tree2.root
+			self._size = tree2._size
+			return
+		if tree2._size == 0: #tree2 is empty
+			self.insert(key, val)
+			return
+		if self.root.key < key: #self's keys are smaller
+			new_node = AVLNode(key, val)
+			new_node.left = self.root
+			curr = tree2.root
+			while curr.left.key 
+			return
+		if tree2.root.key < key: #tree2's keys are smaller
+			new_node = AVLNode(key, val)
+			new_node.right = self.root
+			self.root.parent = new_node
+			new_node.left = tree2.root
+			tree2.root.parent = new_node
+			self.root = new_node
+			self._size += tree2._size + 1
+			#rebalancing from new_node
+			self.rebalance_after_insert(key, new_node)
+			return
+		return -1
 
 
 	"""splits the dictionary at a given node
