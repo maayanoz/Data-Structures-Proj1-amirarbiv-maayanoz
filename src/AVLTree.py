@@ -179,7 +179,16 @@ class AVLTree(object):
 		return new_node, edges, rotations
     
 
-
+	""" updates heights going up from the inserted node
+	@type node: AVLNode
+	@param node: the newly inserted node
+	"""
+	def update_heights(self, node):
+		curr = node.parent
+		while curr is not None:
+			curr.height = 1 + max(curr.right.height, curr.right.height)
+			curr = curr.parent
+		return None
 
 
     
