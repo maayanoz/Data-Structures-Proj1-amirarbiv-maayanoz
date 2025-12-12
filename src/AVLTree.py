@@ -473,50 +473,63 @@ class AVLTree(object):
 	dictionary smaller than node.key, and right is an AVLTree representing the keys in the 
 	dictionary larger than node.key.
 	"""
-	def split(self, node):
-		if node is max_node(self) or node is min_node(self): #edge cases
-			delete(node)
-			return self, None
-		left_tree = AVLTree()
-		right_tree = AVLTree()
-		left_tree.root = node.predecessor(node)
-		right_tree.root = node.successor(node)
-		
-		curr = left_tree.root
-		while predecessor(curr) is not None:
-			curr = predecessor(curr)
-			left_tree.insert(curr.key, curr.value)
-		curr = right_tree.root
-		while successor(curr) is not None:	
-			curr = successor(curr)
-			right_tree.insert(curr.key, curr.value)
+	def split(self, node): #split using join and delete recursively
+		return self.split_rec(self.root, node.key)
 
 			
 
-
+	def split_rec(self, node, key): #helper function for split
+		if not node.is_real_node():
+			return AVLTree(), AVLTree()
+		if node.key < key:
+			left, right = split_rec(node.right, key)
+			t_org_l = AVLTree()
+			t_org_l.root = node.left
+			if node.is_real_node():
+				join(t_org_l, left, node.key, node.value)
+			return node, right
+		elif node.key > key:
+			left, right = self.split_rec(node.left, key)
+			t_org_r = AVLTree()
+			t_org_r.root = node.right
+			if node.is_real_node():
+				join(t_org_r, right, node.key, node.value)
+			return left, node
+		else: #node.key == key
+			tree_small = AVLTree()
+			tree_small.root = node.left
+			if node.left:
+				node.left.parent = None
+				pass
+			tree_big = AVLTree()
+			tree_big.root = node.right
+			if node.right:
+				node.right.parent = None
+				pass
+			return tree_small, tree_big
 	
 
-	def successor(self, node):
-		if node.right.is_real_node(): #go right once and then left until we reach the min
-			curr = node.right
-			while curr.left.is_real_node():
-				curr = curr.left
-			return curr
-		curr = node
-		while curr.parent is not None and curr.parent.right == curr: #go up until we find a parent that is a left child
-			curr = curr.parent
-		return curr.parent #could be None if no successor exists
+	# def successor(self, node):
+	# 	if node.right.is_real_node(): #go right once and then left until we reach the min
+	# 		curr = node.right
+	# 		while curr.left.is_real_node():
+	# 			curr = curr.left
+	# 		return curr
+	# 	curr = node
+	# 	while curr.parent is not None and curr.parent.right == curr: #go up until we find a parent that is a left child
+	# 		curr = curr.parent
+	# 	return curr.parent #could be None if no successor exists
 
-	def predecessor(self, node):
-		if node.left.is_real_node(): #go left once and then right until we reach the max
-			curr = node.left
-			while curr.right.is_real_node():
-				curr = curr.right
-			return curr
-		curr = node
-		while curr.parent is not None and curr.parent.left == curr: #go up until we find a parent that is a right child
-			curr = curr.parent
-		return curr.parent #could be None if no predecessor exists
+	# def predecessor(self, node):
+	# 	if node.left.is_real_node(): #go left once and then right until we reach the max
+	# 		curr = node.left
+	# 		while curr.right.is_real_node():
+	# 			curr = curr.right
+	# 		return curr
+	# 	curr = node
+	# 	while curr.parent is not None and curr.parent.left == curr: #go up until we find a parent that is a right child
+	# 		curr = curr.parent
+	# 	return curr.parent #could be None if no predecessor exists
 
 	"""returns an array representing dictionary 
 
