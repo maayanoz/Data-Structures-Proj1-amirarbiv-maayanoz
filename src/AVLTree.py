@@ -255,10 +255,10 @@ class AVLTree(object):
 		if self.root is None: #check if tree is empty
 			new_node = AVLNode(key, val)
 			self.root = new_node
-			self.size += 1
+			self._size += 1
 			return new_node, 0, 0
 		edges = 0
-		curr = self.max_node
+		curr = self.max_node()
 		while curr.key > key: #move up until we find the correct subtree
 			if curr.parent is None:
 				break
@@ -292,7 +292,7 @@ class AVLTree(object):
 		else:
 			self.root = node
 		temp.parent = node
-
+		self.update_heights(temp) #update heights starting from temp
 		self.update_heights(node)#switch heights
 		return None
 #need to fix heights after rotation
@@ -312,17 +312,17 @@ class AVLTree(object):
 		else:
 			self.root = node
 		temp.parent = node
-		
+		self.update_heights(temp) #update heights starting from temp
 		self.update_heights(node) #switch heights
 		return None
 
 
 
-		def update_heights_after_rotation(self, node): #updating heights after rotation using update_heights
-			node.right.height = 1 + max(node.left.height, node.right.height)
-			node.left.height = 1 + max(node.left.height, node.right.height)
-			node.height = 1 + max(node.left.height, node.right.height)
-			return None
+	def update_heights_after_rotation(self, node): #updating heights after rotation using update_heights
+		node.right.height = 1 + max(node.left.height, node.right.height)
+		node.left.height = 1 + max(node.left.height, node.right.height)
+		node.height = 1 + max(node.left.height, node.right.height)
+		return None
 				
 
 	"""deletes node from the dictionary
@@ -365,7 +365,7 @@ class AVLTree(object):
 		#check which tree is bigger
 		#start from the root of the bigger tree and go down the left/right spine until heights are equal
 		#then insert new_node there and attach the smaller tree
-		if self.size >= tree2.size: #self is bigger
+		if self._size >= tree2._size: #self is bigger
 			if key < self.root.key: #self's keys are larger
     
 				curr = self.root 
@@ -488,18 +488,18 @@ class AVLTree(object):
 		if not node.is_real_node():
 			return AVLTree(), AVLTree()
 		if node.key < key:
-			left, right = split_rec(node.right, key)
+			left, right = self.split_rec(node.right, key)
 			t_org_l = AVLTree()
 			t_org_l.root = node.left
 			if node.is_real_node():
-				join(t_org_l, left, node.key, node.value)
+				self.join(t_org_l, left, node.key, node.value)
 			return node, right
 		elif node.key > key:
 			left, right = self.split_rec(node.left, key)
 			t_org_r = AVLTree()
 			t_org_r.root = node.right
 			if node.is_real_node():
-				join(t_org_r, right, node.key, node.value)
+				self.join(t_org_r, right, node.key, node.value)
 			return left, node
 		else: #node.key == key
 			tree_small = AVLTree()
