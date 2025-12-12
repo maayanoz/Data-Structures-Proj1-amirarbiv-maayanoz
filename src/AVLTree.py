@@ -430,29 +430,37 @@ class AVLTree(object):
 			self.rebalance_after_insert(key, new_node)
 			return
 
-		if tree2.root.key < key: #tree2's keys are smaller
-			new_node.left = tree2.root
-			update_heights(new_node)
-			tree2.root.parent = new_node
-			curr = self.root
-			merge(self, tree2, curr, new_node)
 
-			#rebalancing from new_node
-			self.rebalance_after_insert(key, new_node)
-			return
-		return
+		# #help junc goes down the left/right spine and inserts new_node
+		# def join_helper(small, big, new_node, side1, side2):
+		# 	curr = small.root 
+		# 	#go left until we find the correct spot to insert new_node
+		# 	while curr.side1.height > small.root.height:
+		# 		curr = curr.side1
+		# 	new_node.side2 = curr.side1
+		# 	if new_node.side2.is_real_node():
+		# 		new_node.side2.parent = new_node
+		# 	new_node.side1 = small.root
+		# 	small.root.parent = new_node
+		# 	update_heights(new_node)
+		# 	new_node.parent = curr
+		# 	curr.side1 = new_node
+		# 	big._size += small._size + 1
+		# 	return
+			
 
-	def merge (self , tree2, curr, new_node): #helper function for join
-		while curr.left.height > new_node.left.height: #find the correct spot to insert new_node
-			curr = curr.left
-		new_node.right = curr
-		update_heights(new_node)
-		new_node.parent = curr.parent
-		curr.parent.left = new_node
-		curr.parent = new_node
-		self._size += tree2._size + 1
-		update_heights(new_node.parent)
-		return self
+
+	# def merge (self , tree2, curr, new_node): #helper function for join
+	# 	while curr.left.height > new_node.left.height: #find the correct spot to insert new_node
+	# 		curr = curr.left
+	# 	new_node.right = curr
+	# 	update_heights(new_node)
+	# 	new_node.parent = curr.parent
+	# 	curr.parent.left = new_node
+	# 	curr.parent = new_node
+	# 	self._size += tree2._size + 1
+	# 	update_heights(new_node.parent)
+	# 	return self
 
 
 	"""splits the dictionary at a given node
