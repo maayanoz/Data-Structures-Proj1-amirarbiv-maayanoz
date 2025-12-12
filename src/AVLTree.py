@@ -356,14 +356,76 @@ class AVLTree(object):
 			return
 
 		new_node = AVLNode(key, val)
-		if self.root.key < key: #self's keys are smaller
-			new_node.left = self.root #new_node becomes the new root
-			update_heights(new_node)
-			self.root.parent = new_node
+		#check which tree is bigger
+		#start from the root of the bigger tree and go down the left/right spine until heights are equal
+		#then insert new_node there and attach the smaller tree
+		if self.size >= tree2.size: #self is bigger
+			if key < self.root.key: #self's keys are larger
+    
+				curr = tree2.root 
+				#go left until we find the correct spot to insert new_node
+				while curr.left.height > tree2.root.height:
+					curr = curr.left
+				new_node.right = curr.left
+				if new_node.right.is_real_node():
+					new_node.right.parent = new_node
+				new_node.left = tree2.root
+				tree2.root.parent = new_node
+				update_heights(new_node)
+				new_node.parent = curr
+				curr.left = new_node
+				self._size += tree2._size + 1
+    
+			else: #tree2's keys are larger
+				curr = self.root 
+				#go right until we find the correct spot to insert new_node
+				while curr.right.height > self.root.height:
+					curr = curr.right
+				new_node.left = curr.right
+				if new_node.left.is_real_node():
+					new_node.left.parent = new_node
+				new_node.right = self.root
+				self.root.parent = new_node
+				update_heights(new_node)
+				new_node.parent = curr
+				curr.side1 = new_node
+				tree2._size += self._size + 1
 
-			curr = tree2.root
-			merge(self, tree2, curr, new_node)
-			self.root = tree2.root
+		else: #tree2 is bigger
+			if key < tree2.root.key: #self's keys are larger				
+
+				curr = tree2.root 
+				#go left until we find the correct spot to insert new_node
+				while curr.left.height > tree2.root.height:
+					curr = curr.left
+				new_node.right = curr.left
+				if new_node.right.is_real_node():
+					new_node.right.parent = new_node
+				new_node.left = tree2.root
+				tree2.root.parent = new_node
+				update_heights(new_node)
+				new_node.parent = curr
+				curr.left = new_node
+				self._size += tree2._size + 1
+
+
+			else: #tree2's keys are larger
+				
+				curr = self.root 
+				#go left until we find the correct spot to insert new_node
+				while curr.right.height > self.root.height:
+					curr = curr.right
+				new_node.left = curr.right
+				if new_node.left.is_real_node():
+					new_node.left.parent = new_node
+				new_node.right = self.root
+				self.root.parent = new_node
+				update_heights(new_node)
+				new_node.parent = curr
+				curr.right = new_node
+				tree2._size += self._size + 1
+
+			update_heights(new_node.parent)
 			#rebalancing from new_node
 			self.rebalance_after_insert(key, new_node)
 			return
