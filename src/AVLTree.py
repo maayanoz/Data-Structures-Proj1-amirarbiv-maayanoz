@@ -275,7 +275,7 @@ class AVLTree(object):
 	"""performs a rotation on the given unbalanced node
 	@type node: AVLNode
 	@param node: the unbalanced node
-"""
+	"""
 	def rotate_left(self, node): #node is the unbalanced node 
 		temp = node
 		node = node.right
@@ -284,18 +284,18 @@ class AVLTree(object):
 		if temp.right.is_real_node():
 			temp.right.parent = temp
 		node.left = temp
-		if temp.parent is not None: #check if temp is not root
-			if temp.parent.right == temp:
-				temp.parent.right = node
+		if node.parent is not None: #check if temp is not root
+			if node.parent.right == temp:
+				node.parent.right = node
 			else:
-				temp.parent.left = node
+				node.parent.left = node
 		else:
 			self.root = node
 		temp.parent = node
-		self.update_heights(temp) #update heights starting from temp
-		self.update_heights(node)#switch heights
+		self.update_heights_after_rotation(temp) #update heights starting from temp
+		self.update_heights_after_rotation(node)#switch heights
 		return None
-#need to fix heights after rotation
+
 	def rotate_right(self, node): #code is similar to rotate_left
 		temp = node
 		node = node.left
@@ -305,15 +305,15 @@ class AVLTree(object):
 			temp.left.parent = temp
 		node.right = temp
 		if temp.parent is not None:
-			if temp.parent.right == temp:
-				temp.parent.right = node
+			if node.parent.right == temp:
+				node.parent.right = node
 			else:
-				temp.parent.left = node
+				node.parent.left = node
 		else:
 			self.root = node
 		temp.parent = node
-		self.update_heights(temp) #update heights starting from temp
-		self.update_heights(node) #switch heights
+		self.update_heights_after_rotation(temp) #update heights starting from temp
+		self.update_heights_after_rotation(node) #switch heights
 		return None
 
 
