@@ -194,29 +194,36 @@ class AVLTree(object):
 		return None
 
 
+	""" returns the balance factor of a node
+	@type node: AVLNode
+	@param node: the node to calculate the balance factor for
+	@rtype: int
+	@returns: the balance factor of the node
+	"""
+	def get_bf(self, node):
+		if not node.is_real_node():
+			return 0
+		return node.left.height - node.right.height
     
-""" rotates and rebalances the tree after insertion
-
+    
+	""" rotates and rebalances the tree after insertion
 	@type key: int
 	@param key: key of the newly inserted node
 	@type node: AVLNode
 	@param node: the newly inserted node
 	@rtype: int
 	@returns: number of rotations performed during rebalancing
-"""
+	"""
 
 	def rebalance_after_insert(self, key, node): #rebalancing and updating heights going up from the inserted node
 		curr = node.parent
 		rotations = 0
 		while curr is not None:
-			left_height = curr.left.height if curr.left.is_real_node() else -1
-			right_height = curr.right.height if curr.right.is_real_node() else -1
-			curr.height = 1 + max(left_height, right_height)
-
-			balance_factor = left_height - right_height
+			self.update_heights(curr) #update heights
+			balance_factor = self.get_bf(curr)
 
 			if balance_factor > 1: #left heavy
-				if key < curr.left.key: #left-left case
+				if self.get_bf(curr.left) >= 0: #left-left case
 					self.rotate_right(curr)
 					rotations += 1
 				else: #left-right case
@@ -224,7 +231,7 @@ class AVLTree(object):
 					self.rotate_right(curr)
 					#rotations += 2 what they said not to count
 			elif balance_factor < -1: #right heavy
-				if key > curr.right.key: #right-right case
+				if self.get_bf(curr.right) <= 0: #right-right case
 					self.rotate_left(curr)
 					rotations += 1
 				else: #right-left case
