@@ -339,8 +339,45 @@ class AVLTree(object):
 	@type node: AVLNode
 	@pre: node is a real pointer to a node in self
 	"""
-	def delete(self, node):
-		return	
+	def delete(self, node): #time complexity O(log n)
+		if self._size == 1: #only root exists
+			self.root = None
+			self._size = 0
+			return
+		if node.right.is_real_node() is False and node.left.is_real_node() is False: #node is a leaf
+			node.is_virtual = True
+			node.key = -1
+			node.value = None
+		if node.right.is_real_node() is False and node.left.is_real_node() is True: #node has only left child
+			if node.parent is None: #node is root
+				self.root = node.left
+				self.root.parent = None
+			else:
+				if node.parent.left == node:
+					node.parent.left = node.left
+				else:
+					node.parent.right = node.left
+				node.left.parent = node.parent
+		elif node.left.is_real_node() is False and node.right.is_real_node() is True: #node has only right child
+			if node.parent is None: #node is root
+				self.root = node.right
+				self.root.parent = None
+			else:
+				if node.parent.left == node:
+					node.parent.left = node.right
+				else:
+					node.parent.right = node.right
+				node.right.parent = node.parent
+		else: #node has two children
+			succ = self.successor(node)
+			node.key = succ.key
+			node.value = succ.value
+			self._size += 1 #to cancel out the decrement inside
+			self.delete(succ)
+		if node.parent is not None:
+			self.rebalance_after_insert(node.parent.key, node.parent) #rebalance from parent
+		self._size -= 1
+		return
 
 	
 	"""joins self with item and another AVLTree
