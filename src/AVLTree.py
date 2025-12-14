@@ -326,8 +326,10 @@ class AVLTree(object):
 
 
 	def update_heights_after_rotation(self, node): #updating heights after rotation using update_heights
-		node.right.height = 1 + max(node.left.height, node.right.height)
-		node.left.height = 1 + max(node.left.height, node.right.height)
+		if node.right.is_real_node():
+			node.right.height = 1 + max(node.right.left.height, node.right.right.height)
+		if node.left.is_real_node():
+			node.left.height = 1 + max(node.left.left.height, node.left.right.height)
 		node.height = 1 + max(node.left.height, node.right.height)
 		return None
 				
